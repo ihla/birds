@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
 
 public class Birds implements ApplicationListener {
-	private static final int NUMBER_OF_FRAMES = 10;
+	private static final int NUMBER_OF_FRAMES = 55;
 	private static final String SPRITE_NAME = "vtak_modry/";
 	private static final String TAG = "Birds";
 	private SpriteBatch batch;
@@ -29,7 +29,7 @@ public class Birds implements ApplicationListener {
 		float h = Gdx.graphics.getHeight();
 		
 		batch = new SpriteBatch();
-		batch.setProjectionMatrix(new Matrix4().setToOrtho2D(0, 0, w, h));
+		//batch.setProjectionMatrix(new Matrix4().setToOrtho2D(0, 0, w, h));
 
 		atlas = new TextureAtlas(Gdx.files.internal("data/blue_bird.txt"), Gdx.files.internal("data/"));
 		sprite = atlas.createSprite("vtak_modry/0000");
@@ -53,12 +53,14 @@ public class Birds implements ApplicationListener {
 		Gdx.gl.glClearColor(1, 1, 1, 1);
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
-		stateTime += Gdx.graphics.getDeltaTime();
+		float deltaTime = Gdx.graphics.getDeltaTime(); 
+		stateTime += deltaTime;
 		currentFrame = flyingBird.getKeyFrame(stateTime, true);
 		
 		batch.begin();
 		//sprite.draw(batch);
-		batch.draw(currentFrame, 50, 50);
+		//batch.draw(currentFrame, 50 + 500 * deltaTime, 50 + 100 * deltaTime);
+		batch.draw(currentFrame, Gdx.graphics.getWidth() / 3, Gdx.graphics.getHeight() / 3);
 		batch.end();
 	}
 
