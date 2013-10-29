@@ -12,7 +12,11 @@ public class MainActivity extends AndroidApplication {
         
         AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
         cfg.useGL20 = false;
-        
+        cfg.r = 8;
+        cfg.g = 8;
+        cfg.b = 8;
+        cfg.a = 8;
+
         initialize(new Birds(), cfg);
     }
 }
