@@ -4,7 +4,10 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -12,9 +15,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 public class Birds implements ApplicationListener {
 	private static final String TAG = "Birds";
 
-	private static final int NUMBER_OF_FRAMES = 6;
-	private static final String KEY_FRAME_NAME = "frame";
-	private static final float ANIMATION_DURATION_IN_SEC = 1f;
+	private static final int NUMBER_OF_FRAMES = 5;
+	private static final String KEY_FRAME_NAME = "birdie_fly";
+	private static final float ANIMATION_DURATION_IN_SEC = 0.75f;
+	private static final float FLYING_DURATION = 5f;
+	private float flyingSpeed;
+
 	private SpriteBatch batch;
 	private TextureAtlas atlas;
 	private Animation animation;
@@ -23,7 +29,13 @@ public class Birds implements ApplicationListener {
 	private OrthographicCamera camera;
 	float screenWidth;
 	float screenHeight;
-	
+
+	private Texture backgroundTexture;
+
+	private Sprite background;
+
+	private float bobX;
+
 	@Override
 	public void create() {		
 		screenWidth = Gdx.graphics.getWidth();
@@ -37,12 +49,22 @@ public class Birds implements ApplicationListener {
 
 		animation = new Animation(ANIMATION_DURATION_IN_SEC / NUMBER_OF_FRAMES, atlas.findRegions(KEY_FRAME_NAME));
 		stateTime = 0;
+		
+		backgroundTexture = new Texture("data/birdie_bckg.png");
+		backgroundTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		background = new Sprite(backgroundTexture);
+		background.setSize(screenWidth, screenHeight);
+		background.setPosition(-screenWidth/2, -screenHeight/2);
+		
+		flyingSpeed = screenWidth / FLYING_DURATION;
+		bobX = -screenWidth/2;
 	}
 
 	@Override
 	public void dispose() {
 		batch.dispose();
 		atlas.dispose();
+		backgroundTexture.dispose();
 	}
 
 	@Override
@@ -56,10 +78,17 @@ public class Birds implements ApplicationListener {
 
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
-		batch.draw(currentFrame, -screenWidth/2, -screenHeight/2);
+		background.draw(batch);
+		batch.draw(currentFrame, getX(deltaTime), 0);
 		batch.end();
 	}
 
+	private float getX(float deltaTime) {
+		bobX += flyingSpeed * deltaTime;
+		if (bobX > screenWidth) bobX = -screenWidth/2;
+		return bobX;
+	}
+	
 	@Override
 	public void resize(int width, int height) {
 	}
