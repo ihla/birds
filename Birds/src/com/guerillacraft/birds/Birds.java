@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -36,6 +37,8 @@ public class Birds implements ApplicationListener {
 
 	private float bobX;
 
+	private BitmapFont font;
+
 	@Override
 	public void create() {		
 		screenWidth = Gdx.graphics.getWidth();
@@ -58,6 +61,10 @@ public class Birds implements ApplicationListener {
 		
 		flyingSpeed = screenWidth / FLYING_DURATION;
 		bobX = -screenWidth/2;
+		
+		font = new BitmapFont(Gdx.files.internal("data/font.fnt"), Gdx.files.internal("data/font.png"), false);
+		font.setColor(1f, 0f, 0f, 1f);
+		font.setScale(5f);
 	}
 
 	@Override
@@ -65,6 +72,7 @@ public class Birds implements ApplicationListener {
 		batch.dispose();
 		atlas.dispose();
 		backgroundTexture.dispose();
+		font.dispose();
 	}
 
 	@Override
@@ -80,6 +88,7 @@ public class Birds implements ApplicationListener {
 		batch.begin();
 		background.draw(batch);
 		batch.draw(currentFrame, getX(deltaTime), 0);
+		font.draw(batch, "fps:"+Gdx.graphics.getFramesPerSecond(), 0f, -screenHeight/2 + font.getLineHeight());
 		batch.end();
 	}
 
